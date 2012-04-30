@@ -32,7 +32,7 @@ PRODUCT_PACKAGES := \
     Gallery2 \
     LatinIME \
     Launcher2 \
-    MusicFX \
+    DSPManager \
     MusicVisualization \
     NoiseField \
     Provision \
