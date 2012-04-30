@@ -561,7 +561,7 @@ target_notice_file_html_gz := $(TARGET_OUT_INTERMEDIATES)/NOTICE.html.gz
 tools_notice_file_txt := $(HOST_OUT_INTERMEDIATES)/NOTICE.txt
 tools_notice_file_html := $(HOST_OUT_INTERMEDIATES)/NOTICE.html
 
-kernel_notice_file := $(TARGET_OUT_NOTICE_FILES)/src/kernel.txt
+#kernel_notice_file := $(TARGET_OUT_NOTICE_FILES)/src/kernel.txt
 
 $(eval $(call combine-notice-files, \
 			$(target_notice_file_txt), \
