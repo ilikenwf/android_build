@@ -48,7 +48,6 @@ PRODUCT_PACKAGES := \
 	LiveWallpapersPicker \
 	ApiDemos \
 	GestureBuilder \
-	CubeLiveWallpapers \
 	QuickSearchBox \
 	WidgetPreview \
 	monkeyrunner \
