@@ -10,6 +10,8 @@ Invoke ". build/envsetup.sh" from your shell to add the following functions to y
 - resgrep: Greps on all local res/*.xml files.
 - godir:   Go to the directory containing a file.
 - mka:      Builds using SCHED_BATCH on all processors
+- mbot:     Builds for all devices using the psuedo buildbot
+- mkapush:  Same as mka with the addition of adb pushing to the device.
 - reposync: Parallel repo sync using ionice and SCHED_BATCH
 
 Look at the source to view more functions. The complete list is:
@@ -448,6 +450,7 @@ function brunch()
 {
     breakfast $*
     if [ $? -eq 0 ]; then
+        export FAST_BUILD=1
         mka bacon
     else
         echo "No such item in brunch menu. Try 'breakfast'"
@@ -1170,6 +1173,35 @@ function mka() {
             ;;
         *)
             schedtool -B -n 1 -e ionice -n 1 make -j `cat /proc/cpuinfo | grep "^processor" | wc -l` "$@"
+            ;;
+    esac
+}
+
+function mbot() {
+    unset LUNCH_MENU_CHOICES
+    croot
+    ./vendor/aokp/bot/deploy.sh
+}
+
+function mkapush() {
+    case `uname -s` in
+        Darwin)
+            make -j `sysctl hw.ncpu|cut -d" " -f2` "$@"
+            ;;
+        *)
+            schedtool -B -n 1 -e ionice -n 1 make -j `cat /proc/cpuinfo | grep "^processor" | wc -l` "$@"
+            ;;
+    esac
+    case $@ in
+        *\ * )
+            echo $@ | awk 'gsub(/ /,"\n") {print}' | while read line; do
+                blackmagic=`sed -n "/$line/{p;q;}" $ANDROID_PRODUCT_OUT/installed-files.txt | awk {'print $2'}`
+                adb push $ANDROID_PRODUCT_OUT$blackmagic $blackmagic
+            done
+            ;;
+        *)
+            blackmagic=`sed -n "/$@/{p;q;}" $ANDROID_PRODUCT_OUT/installed-files.txt | awk {'print $2'}`
+            adb push $ANDROID_PRODUCT_OUT$blackmagic $blackmagic
             ;;
     esac
 }
